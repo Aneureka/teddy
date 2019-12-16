@@ -34,23 +34,21 @@ public class HttpProtocol implements ChannelHandler {
 
     @Override
     public void handleRead(SelectionKey key) {
-        // todo
-        System.out.println("reading...");
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-        System.out.println("reading here");
         try {
             long bytesRead = 0;
+            StringBuilder messageBuilder = new StringBuilder();
             do {
                 bytesRead = socketChannel.read(buffer);
-                System.out.println(bytesRead);
-                StringBuilder messageBuilder = new StringBuilder();
+//                System.out.println(bytesRead);
                 if (bytesRead == bufferSize) {
                     messageBuilder.append(new String(buffer.array()));
                     buffer.clear();
                 } else if (bytesRead >= 0) {
                     key.attach(messageBuilder.toString());
-                    System.out.println("message " + messageBuilder.toString());
+                    messageBuilder.append(new String(buffer.array()));
+//                    System.out.println(messageBuilder.toString());
                     key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                 } else if (bytesRead == -1) {
                     socketChannel.close();
@@ -63,8 +61,6 @@ public class HttpProtocol implements ChannelHandler {
 
     @Override
     public void handleWrite(SelectionKey key) {
-        // todo
-        System.out.println("writing...");
         String msg = (String) key.attachment();
         byte[] byteMsg = msg.getBytes();
         ByteBuffer buffer = ByteBuffer.allocate(bufferSize);

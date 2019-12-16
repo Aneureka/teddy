@@ -1,10 +1,7 @@
 package tcp;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.channels.*;
-import java.util.Iterator;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -29,9 +26,9 @@ public class TCPServer {
     public void startServer() throws IOException {
         ConcurrentLinkedQueue<SocketChannel> channelQueue = new ConcurrentLinkedQueue<>();
         Acceptor acceptor = new Acceptor(port, channelQueue);
-        WorkerPool workers = new WorkerPool(channelQueue, handler);
+        Worker worker = new Worker(channelQueue, handler);
         new Thread(acceptor).start();
-        new Thread(workers).start();
+        new Thread(worker).start();
     }
 
 }
