@@ -1,3 +1,5 @@
+import tcp.ChannelHandler;
+import tcp.Protocol;
 import tcp.TCPServer;
 
 import java.io.IOException;
@@ -14,14 +16,15 @@ public class HttpServer {
     private TCPServer tcpServer;
 
     public HttpServer(int port) {
-        this.tcpServer = new TCPServer(port, new HttpProtocol());
+        HttpProtocol httpProtocol = new HttpProtocol();
+        this.tcpServer = new TCPServer(port, new ChannelHandler(httpProtocol));
     }
 
     public HttpServer() {
         this(DEFAULT_PORT);
     }
 
-    public void startServer() throws IOException {
+    public void startServer() {
         tcpServer.startServer();
     }
 }

@@ -1,6 +1,5 @@
 package tcp;
 
-import java.io.IOException;
 import java.nio.channels.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -11,8 +10,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  **/
 public class TCPServer {
 
-    public final static int DEFAULT_TIMEOUT = 5000;
-
     private int port;
 
     private ChannelHandler handler;
@@ -22,8 +19,7 @@ public class TCPServer {
         this.handler = handler;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
-    public void startServer() throws IOException {
+    public void startServer() {
         ConcurrentLinkedQueue<SocketChannel> channelQueue = new ConcurrentLinkedQueue<>();
         Acceptor acceptor = new Acceptor(port, channelQueue);
         Worker worker = new Worker(channelQueue, handler);

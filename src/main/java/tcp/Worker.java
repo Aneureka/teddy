@@ -18,11 +18,7 @@ import java.util.logging.Logger;
  **/
 public class Worker implements Runnable {
 
-    private static final int PROCESSING = 5;
-
     private static final int DEFAULT_SELECT_TIMEOUT = 100;
-
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private ConcurrentLinkedQueue<SocketChannel> socketChannelQueue;
 
@@ -40,7 +36,6 @@ public class Worker implements Runnable {
         try {
             selector = Selector.open();
         } catch (IOException e) {
-            logger.warning(e.getMessage());
             e.printStackTrace();
         }
         // This thread is used for polling new accepted channels from queue.
@@ -54,9 +49,8 @@ public class Worker implements Runnable {
                     }
                     try {
                         channel.configureBlocking(false);
-                        channel.register(selector, SelectionKey.OP_READ);
+                        channel.register(selector, SelectionKey.OP_READ, new ChannelBuffer());
                     } catch (IOException e) {
-                        logger.warning(e.getMessage());
                         e.printStackTrace();
                     }
                 }
@@ -68,7 +62,7 @@ public class Worker implements Runnable {
             public void run() {
                 try {
                     while (!Thread.interrupted()) {
-                        if (selector.select(DEFAULT_SELECT_TIMEOUT) == 0) {
+                        if (selector.selectNow() == 0) {
                             continue;
                         }
                         Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
@@ -84,7 +78,6 @@ public class Worker implements Runnable {
                         }
                     }
                 } catch (IOException e) {
-                    logger.warning(e.getMessage() + " when doing selection");
                     e.printStackTrace();
                 }
             }
