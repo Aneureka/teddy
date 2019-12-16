@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * @author Aneureka
  * @createdAt 2019-12-09 20:22
@@ -6,7 +8,10 @@
 public class Main {
 
     public static void main(String[] args) {
-        Thread thread = new Thread(new HttpServer());
-        thread.start();
+        try {
+            new HttpServer().startServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,4 +1,3 @@
-import tcp.Protocol;
 import tcp.TCPServer;
 
 import java.io.IOException;
@@ -8,22 +7,21 @@ import java.io.IOException;
  * @createdAt 2019-12-09 20:17
  * @description
  **/
-public class HttpServer implements Runnable {
+public class HttpServer {
 
     public final static int DEFAULT_PORT = 8080;
 
     private TCPServer tcpServer;
 
     public HttpServer(int port) {
-        this.tcpServer = new TCPServer(new HttpProtocol(), port);
+        this.tcpServer = new TCPServer(port, new HttpProtocol());
     }
 
     public HttpServer() {
         this(DEFAULT_PORT);
     }
 
-    @Override
-    public void run() {
-        tcpServer.run();
+    public void startServer() throws IOException {
+        tcpServer.startServer();
     }
 }
