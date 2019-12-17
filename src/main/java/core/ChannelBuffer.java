@@ -7,12 +7,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Aneureka
- * @createdAt 2019-12-15 17:37
- * @description
- **/
-public class ChannelBuffer {
+public class ChannelBuffer implements ChannelHandler {
 
     public final static int BUFFER_SIZE = 1024 * 8;
 
@@ -27,6 +22,7 @@ public class ChannelBuffer {
 
     /**
      * Append content of buffer that will be read then.
+     *
      * @param buffer
      * @param length
      */
@@ -36,6 +32,7 @@ public class ChannelBuffer {
 
     /**
      * Append content of buffer that will be written then.
+     *
      * @param buffer
      * @param length
      */
@@ -52,6 +49,7 @@ public class ChannelBuffer {
 
     /**
      * Insert content of buffer in the front of read buffer.
+     *
      * @param buffer
      * @param length
      */
@@ -61,6 +59,7 @@ public class ChannelBuffer {
 
     /**
      * Insert content of buffer in the front of write buffer.
+     *
      * @param buffer
      * @param length
      */
@@ -77,6 +76,7 @@ public class ChannelBuffer {
 
     /**
      * Poll all the content of read buffer.
+     *
      * @return
      */
     public ByteBuffer pollAllRead() {
@@ -85,6 +85,7 @@ public class ChannelBuffer {
 
     /**
      * Poll all the content of write buffer.
+     *
      * @return
      */
     public ByteBuffer pollAllWrite() {
@@ -99,6 +100,7 @@ public class ChannelBuffer {
 
     /**
      * poll content from read buffer to be processed by concrete protocol.
+     *
      * @param buffer
      * @return
      */
@@ -108,6 +110,7 @@ public class ChannelBuffer {
 
     /**
      * poll content from write buffer that will be written to socket channel.
+     *
      * @param buffer
      * @return
      */
@@ -127,6 +130,7 @@ public class ChannelBuffer {
 
     /**
      * Inquire the length of read buffer.
+     *
      * @return
      */
     public int lengthToRead() {
@@ -135,6 +139,7 @@ public class ChannelBuffer {
 
     /**
      * Inquire the length of write buffer.
+     *
      * @return
      */
     public int lengthToWrite() {
@@ -155,10 +160,11 @@ public class ChannelBuffer {
 
     /**
      * Read from socket channel with a fixed-length buffer.
+     *
      * @param socketChannel
      * @throws ClosedChannelException
      */
-    public void readFromChannel(SocketChannel socketChannel) throws ClosedChannelException {
+    private void readFromChannel(SocketChannel socketChannel) {
         ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
         int bytesRead = 0;
         try {
@@ -168,17 +174,20 @@ public class ChannelBuffer {
         }
         this.addToRead(buffer, bytesRead);
         if (bytesRead == -1) {
-            throw new ClosedChannelException();
+            try {
+                socketChannel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * Write <b>all</b> the content of write buffer to socket channel.
+     *
      * @param socketChannel
-     * @param protocol
      */
-    public void writeToChannel(SocketChannel socketChannel, Protocol protocol) {
-        protocol.process(this);
+    private void writeToChannel(SocketChannel socketChannel) {
         ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
         try {
             while (this.pollWrite(buffer) != 0) {
@@ -195,5 +204,21 @@ public class ChannelBuffer {
     @Override
     public String toString() {
         return String.format("=== [ReadBuffer] ===\n%s\n=== [WriteBuffer] ===\n%s", new String(array(readBuffer)), new String(array(writeBuffer)));
+    }
+
+    @Override
+    public void read(Object object) {
+        if (object instanceof SocketChannel) {
+            SocketChannel channel = (SocketChannel) object;
+            this.readFromChannel(channel);
+        }
+    }
+
+    @Override
+    public void write(Object object) {
+        if (object instanceof SocketChannel) {
+            SocketChannel channel = (SocketChannel) object;
+            this.writeToChannel(channel);
+        }
     }
 }

@@ -1,4 +1,6 @@
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Aneureka
@@ -6,6 +8,103 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @description
  **/
 public class HttpHeaders {
+
+    private Map<String, String> headers = new HashMap<>();
+
+    public static String getHeader(HttpRequest request, String name) {
+        return request.headers().get(name);
+    }
+
+    public static void setHeader(HttpRequest request, String name, String value) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name is not exist");
+        }
+
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("value is not exist");
+        }
+        request.headers().set(name.trim(), value.trim());
+    }
+
+    public static void addHeader(HttpRequest request, String name, String value) {
+        HttpHeaders.setHeader(request, name, value);
+    }
+
+    public static void removeHeader(HttpRequest request, String name) {
+        request.headers().remove(name);
+    }
+
+    public static void clearHeaders(HttpRequest request) {
+        request.headers().clear();
+    }
+
+    public static boolean hasContentLength(HttpRequest request) {
+        return request.headers().containsContentLength();
+    }
+
+    public static boolean isChunkTransfer(HttpRequest request) {
+        return request.headers().isChunkTransfer();
+    }
+
+    public static int getContentLength(HttpRequest request) {
+        String length = request.headers().get(HttpHeaders.Names.CONTENT_LENGTH);
+        if (length == null) {
+            throw new IllegalArgumentException(HttpHeaders.Names.CONTENT_LENGTH + " is not exist");
+        }
+        return Integer.parseInt(length);
+    }
+
+    public String get(String name) {
+        return headers.get(name);
+    }
+
+    public void set(String name, String value) {
+        headers.put(name, value);
+    }
+
+    public void remove(String name) {
+        headers.remove(name);
+    }
+
+    public void clear() {
+        headers.clear();
+    }
+
+    public boolean containsValue(String name, String value, boolean ignoreCase) {
+        if (ignoreCase) {
+            for (String key : headers.keySet()) {
+                if (name.equalsIgnoreCase(key) && value.equalsIgnoreCase(headers.get(key))) {
+                    return true;
+                }
+            }
+        } else {
+            for (String key : headers.keySet()) {
+                if (name.equals(key) && value.equals(headers.get(key))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean containsContentLength() {
+        return headers.containsKey(HttpHeaders.Names.CONTENT_LENGTH);
+    }
+
+    public boolean isChunkTransfer() {
+        String value = headers.get(HttpHeaders.Names.TRANSFER_ENCODING);
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        if (value.equalsIgnoreCase("chunked")) {
+            return true;
+        }
+        return false;
+    }
+
+    public Iterator<Map.Entry<String, String>> headersIterator() {
+        return headers.entrySet().iterator();
+    }
 
     /**
      * Standard HTTP header names.
@@ -125,4 +224,6 @@ public class HttpHeaders {
         public static final String UPGRADE = "Upgrade";
         public static final String WEBSOCKET = "WebSocket";
     }
+
+
 }

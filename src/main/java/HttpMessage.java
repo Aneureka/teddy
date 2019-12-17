@@ -1,5 +1,6 @@
 import core.ChannelBuffer;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,36 +10,44 @@ import java.util.Set;
  * @createdAt 2019-12-15 17:20
  * @description
  **/
-public interface HttpMessage {
+public class HttpMessage {
 
-    String getVersion();
+    private String httpVersion;
 
-    void setVersion(String version);
+    private ByteBuffer content;
 
-    String getHeader(String name);
+    private HttpHeaders httpHeaders;
 
-    List<String> getHeaders(String name);
+    public HttpMessage() {
+    }
 
-    Map<String, String> getHeaders();
+    public HttpMessage(String httpVersion, ByteBuffer content, HttpHeaders httpHeaders) {
+        this.httpVersion = httpVersion;
+        this.content = content;
+        this.httpHeaders = httpHeaders;
+    }
 
-    boolean containsHeader(String name);
+    public String version() {
+        return httpVersion;
+    }
 
-    Set<String> getHeaderNames();
+    public void setVersion(String httpVersion) {
+        this.httpVersion = httpVersion;
+    }
 
-    void addHeader(String name, Object value);
+    public ByteBuffer content() {
+        return content;
+    }
 
-    void setHeader(String name, Object value);
+    public void setContent(ByteBuffer content) {
+        this.content = content;
+    }
 
-    void removeHeader(String name);
+    public HttpHeaders headers() {
+        return httpHeaders;
+    }
 
-    void clearHeaders();
-
-    boolean isChunked();
-
-    void setChunked(boolean chunked);
-
-    ChannelBuffer getContent();
-
-    void setContent(ChannelBuffer content);
-
+    public void setHeaders(HttpHeaders httpHeaders) {
+        this.httpHeaders = httpHeaders;
+    }
 }

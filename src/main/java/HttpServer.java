@@ -1,4 +1,5 @@
-import core.ChannelHandler;
+import core.ChannelBuffer;
+import core.ChannelPipeline;
 import core.TCPServer;
 
 /**
@@ -13,8 +14,7 @@ public class HttpServer {
     private TCPServer tcpServer;
 
     public HttpServer(int port) {
-        HttpProtocol httpProtocol = new HttpProtocol();
-        this.tcpServer = new TCPServer(port, new ChannelHandler(httpProtocol));
+        this.tcpServer = new TCPServer(port, () -> new ChannelPipeline(new ChannelBuffer(), new HttpProtocol()));
     }
 
     public HttpServer() {
