@@ -18,7 +18,7 @@ public class HttpProtocol implements Protocol {
     @Override
     public void process(ChannelBuffer channelBuffer) {
         ByteBuffer buffer = ByteBuffer.allocate(ChannelBuffer.BUFFER_SIZE);
-        channelBuffer.pullFromReadBuffer(buffer);
+        channelBuffer.pollRead(buffer);
         byte[] bytesToWrite = ("HTTP/1.1 200 OK\r\n" +
                 "Content-Length: 38\r\n" +
                 "Content-Type: text/html\r\n" +
@@ -28,7 +28,7 @@ public class HttpProtocol implements Protocol {
             buffer.clear();
             int nBytes = Math.min(ChannelBuffer.BUFFER_SIZE, bytesToWrite.length - i);
             buffer.put(bytesToWrite, i, nBytes);
-            channelBuffer.addToWriteBuffer(buffer, nBytes);
+            channelBuffer.addToWrite(buffer, nBytes);
         }
     }
 }
