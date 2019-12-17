@@ -1,12 +1,7 @@
-import tcp.ChannelBuffer;
-import tcp.ChannelHandler;
-import tcp.Protocol;
+import core.ChannelBuffer;
+import core.Protocol;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
 import java.util.logging.Logger;
 
 /**
@@ -24,6 +19,16 @@ public class HttpProtocol implements Protocol {
     public void process(ChannelBuffer channelBuffer) {
         ByteBuffer buffer = ByteBuffer.allocate(ChannelBuffer.BUFFER_SIZE);
         channelBuffer.pullFromReadBuffer(buffer);
-        channelBuffer.addToWriteBuffer(buffer, buffer.capacity());
+        byte[] bytesToWrite = ("HTTP/1.1 200 OK\r\n" +
+                "Content-Length: 38\r\n" +
+                "Content-Type: text/html\r\n" +
+                "\r\n" +
+                "<html><body>Hello World!</body></html><br/>").getBytes();
+        for (int i = 0; i < bytesToWrite.length; i += ChannelBuffer.BUFFER_SIZE) {
+            buffer.clear();
+            int nBytes = Math.min(ChannelBuffer.BUFFER_SIZE, bytesToWrite.length - i);
+            buffer.put(bytesToWrite, i, nBytes);
+            channelBuffer.addToWriteBuffer(buffer, nBytes);
+        }
     }
 }

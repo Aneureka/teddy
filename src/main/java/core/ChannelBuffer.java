@@ -1,11 +1,8 @@
-package tcp;
-
-import com.sun.tools.javac.util.ArrayUtils;
+package core;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.List;
  **/
 public class ChannelBuffer {
 
-    public final static int BUFFER_SIZE = 32;
+    public final static int BUFFER_SIZE = 1024 * 8;
 
     private List<Byte> readBuffer;
 
@@ -28,29 +25,29 @@ public class ChannelBuffer {
         this.writeBuffer = new ArrayList<>();
     }
 
-    public byte[] array() {
-        byte[] res = new byte[readBuffer.size()];
+    private static byte[] array(List<Byte> buffer) {
+        byte[] res = new byte[buffer.size()];
         for (int i = 0; i < res.length; i++) {
-            res[i] = readBuffer.get(i);
+            res[i] = buffer.get(i);
         }
         return res;
     }
 
     public void addToReadBuffer(ByteBuffer buffer, long length) {
-        ChannelBuffer.add(this.readBuffer, buffer, length);
+        add(this.readBuffer, buffer, length);
     }
 
     public void addToWriteBuffer(ByteBuffer buffer, long length) {
         if (buffer == null) return;
-        ChannelBuffer.add(this.writeBuffer, buffer, length);
+        add(this.writeBuffer, buffer, length);
     }
 
-    public void pullFromReadBuffer(ByteBuffer buffer) {
-        ChannelBuffer.pull(this.readBuffer, buffer);
+    public int pullFromReadBuffer(ByteBuffer buffer) {
+        return pull(this.readBuffer, buffer);
     }
 
-    public void pullFromWriteBuffer(ByteBuffer buffer) {
-        ChannelBuffer.pull(this.writeBuffer, buffer);
+    public int pullFromWriteBuffer(ByteBuffer buffer) {
+        return pull(this.writeBuffer, buffer);
     }
 
     private static void add(List<Byte> bufferToAppend, ByteBuffer buffer, long length) {
@@ -71,7 +68,7 @@ public class ChannelBuffer {
 
     @Override
     public String toString() {
-        return new String(array());
+        return String.format("=== [ReadBuffer] ===\n%s\n=== [WriteBuffer] ===\n%s", new String(array(readBuffer)), new String(array(writeBuffer)));
     }
 
     /**
@@ -99,10 +96,11 @@ public class ChannelBuffer {
         protocol.process(this);
         ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
         try {
-            this.pullFromWriteBuffer(buffer);
-            buffer.flip();
-            while (buffer.hasRemaining()) {
-                socketChannel.write(buffer);
+            while (this.pullFromWriteBuffer(buffer) != 0) {
+                buffer.flip();
+                while (buffer.hasRemaining()) {
+                    socketChannel.write(buffer);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

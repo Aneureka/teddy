@@ -1,4 +1,4 @@
-package tcp;
+package core;
 
 import java.nio.channels.*;
 import java.util.concurrent.ConcurrentLinkedQueue;

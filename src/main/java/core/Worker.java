@@ -1,15 +1,11 @@
-package tcp;
+package core;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.*;
-import java.util.logging.Logger;
 
 /**
  * @author Aneureka

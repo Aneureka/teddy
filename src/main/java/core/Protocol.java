@@ -1,6 +1,4 @@
-package tcp;
-
-import java.util.List;
+package core;
 
 /**
  * @author Aneureka

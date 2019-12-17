@@ -1,8 +1,5 @@
-import tcp.ChannelHandler;
-import tcp.Protocol;
-import tcp.TCPServer;
-
-import java.io.IOException;
+import core.ChannelHandler;
+import core.TCPServer;
 
 /**
  * @author Aneureka

@@ -1,4 +1,4 @@
-import tcp.ChannelBuffer;
+import core.ChannelBuffer;
 
 import java.util.List;
 import java.util.Map;

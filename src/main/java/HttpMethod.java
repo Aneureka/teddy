@@ -1,5 +1,3 @@
-package enums;
-
 /**
  * @author Aneureka
  * @createdAt  2019-12-07 17:13
