@@ -11,7 +11,7 @@ import java.util.List;
  * @createdAt 2019-12-19 11:11
  * @description
  **/
-public abstract class ByteToMessageCodec implements ChannelHandler {
+public abstract class ByteToMessageCodec<T> implements ChannelHandler {
 
     private List<Byte> accumulation;
 
@@ -25,7 +25,7 @@ public abstract class ByteToMessageCodec implements ChannelHandler {
      * @param out
      * @return
      */
-    protected abstract boolean decode(List<Byte> in, Object out);
+    protected abstract boolean decode(List<Byte> in, List<T> out);
 
     /**
      * Accept a object and convert it to list of byte.
@@ -40,6 +40,7 @@ public abstract class ByteToMessageCodec implements ChannelHandler {
         if (msg instanceof ByteBuffer) {
             // Read content of buffer into accumulation.
             ByteBuffer buffer = (ByteBuffer) msg;
+            buffer.flip();
             while (true) {
                 try {
                     accumulation.add(buffer.get());
@@ -48,10 +49,12 @@ public abstract class ByteToMessageCodec implements ChannelHandler {
                 }
             }
             // Decode accumulated bytes to target object.
-            Object out = null;
+            List<T> out = new ArrayList<>();
             boolean successful = decode(accumulation, out);
             if (successful) {
-                ctx.sendUpstream(out);
+                for (T t : out) {
+                    ctx.sendUpstream(t);
+                }
             }
         } else {
             ctx.sendUpstream(msg);

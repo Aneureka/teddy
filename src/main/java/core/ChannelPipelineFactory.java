@@ -6,5 +6,9 @@ package core;
  * @description
  **/
 public interface ChannelPipelineFactory {
+    /**
+     * Create a channel pipeline instance.
+     * @return
+     */
     ChannelPipeline getPipeline();
 }

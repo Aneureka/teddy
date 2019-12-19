@@ -11,13 +11,12 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        TcpServer server = new TcpServer(() -> new ChannelPipeline(new ByteToMessageCodec() {
+        TcpServer server = new TcpServer(() -> new ChannelPipeline(new ByteToMessageCodec<HttpRequest>() {
             @Override
-            protected boolean decode(List<Byte> in, Object out) {
+            protected boolean decode(List<Byte> in, List<HttpRequest> out) {
                 in.clear();
                 return false;
             }
-
             @Override
             protected boolean encode(Object in, List<Byte> out) {
                 byte[] bytesToWrite = ("HTTP/1.1 200 OK\r\n" +
