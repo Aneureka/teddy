@@ -1,6 +1,5 @@
-import core.ChannelBuffer;
 import core.ChannelPipeline;
-import core.TCPServer;
+import core.TcpServer;
 
 /**
  * @author Aneureka
@@ -9,16 +8,14 @@ import core.TCPServer;
  **/
 public class HttpServer {
 
-    public final static int DEFAULT_PORT = 8080;
-
-    private TCPServer tcpServer;
-
-    public HttpServer(int port) {
-        this.tcpServer = new TCPServer(port, () -> new ChannelPipeline(new ChannelBuffer(), new HttpProtocol()));
-    }
+    private TcpServer tcpServer;
 
     public HttpServer() {
-        this(DEFAULT_PORT);
+        this.tcpServer = new TcpServer(() -> new ChannelPipeline(new HttpMessageCodec()));
+    }
+
+    public HttpServer(int port) {
+        this.tcpServer = new TcpServer(port, () -> new ChannelPipeline(new HttpMessageCodec()));
     }
 
     public void startServer() {

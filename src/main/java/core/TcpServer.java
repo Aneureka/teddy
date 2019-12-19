@@ -8,13 +8,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @createdAt 2019-12-09 16:41
  * @description
  **/
-public class TCPServer {
+public class TcpServer {
+
+    private final static int DEFAULT_PORT = 8080;
 
     private int port;
 
     private ChannelPipelineFactory pipelineFactory;
 
-    public TCPServer(int port, ChannelPipelineFactory pipelineFactory) {
+    public TcpServer(ChannelPipelineFactory pipelineFactory) {
+        this(DEFAULT_PORT, pipelineFactory);
+    }
+
+    public TcpServer(int port, ChannelPipelineFactory pipelineFactory) {
         this.port = port;
         this.pipelineFactory = pipelineFactory;
     }

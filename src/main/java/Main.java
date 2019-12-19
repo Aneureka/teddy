@@ -1,4 +1,7 @@
-import java.io.IOException;
+import core.ChannelPipeline;
+import core.TcpServer;
+
+import java.util.List;
 
 /**
  * @author Aneureka
@@ -8,7 +11,27 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
-        new HttpServer().startServer();
+        TcpServer server = new TcpServer(() -> new ChannelPipeline(new ByteToMessageCodec() {
+            @Override
+            protected boolean decode(List<Byte> in, Object out) {
+                in.clear();
+                return false;
+            }
+
+            @Override
+            protected boolean encode(Object in, List<Byte> out) {
+                byte[] bytesToWrite = ("HTTP/1.1 200 OK\r\n" +
+                        "Content-Length: 38\r\n" +
+                        "Content-Type: text/html\r\n" +
+                        "\r\n" +
+                        "<html><body>Hello World!</body></html><br/>").getBytes();
+                for (byte b : bytesToWrite) {
+                    out.add(b);
+                }
+                return true;
+            }
+        }));
+        server.startServer();
     }
 }
 

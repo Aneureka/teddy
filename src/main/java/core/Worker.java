@@ -25,6 +25,7 @@ public class Worker implements Runnable {
         this.pipelineFactory = pipelineFactory;
     }
 
+    @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     @Override
     public void run() {
         try {
@@ -41,7 +42,9 @@ public class Worker implements Runnable {
                 }
                 try {
                     channel.configureBlocking(false);
-                    channel.register(selector, SelectionKey.OP_READ, pipelineFactory.getPipeline());
+                    ChannelPipeline pipeline = pipelineFactory.getPipeline();
+                    pipeline.bind(channel);
+                    channel.register(selector, SelectionKey.OP_READ, pipeline);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -57,18 +60,19 @@ public class Worker implements Runnable {
                     Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
                     while (keyIterator.hasNext()) {
                         SelectionKey key = keyIterator.next();
+                        SocketChannel channel = (SocketChannel) key.channel();
+                        ChannelPipeline channelPipeline = (ChannelPipeline) key.attachment();
+                        if (!channelPipeline.bound()) {
+                            channelPipeline.bind(channel);
+                        }
                         if (key.isReadable()) {
-                            SocketChannel socketChannel = (SocketChannel) key.channel();
-                            ChannelPipeline channelPipeline = (ChannelPipeline) key.attachment();
-                            channelPipeline.handleUpstream(socketChannel);
+                            channelPipeline.sendUpstream();
                             if (key.isValid()) {
                                 key.interestOps(SelectionKey.OP_WRITE);
                             }
                         }
                         if (key.isValid() && key.isWritable()) {
-                            SocketChannel socketChannel = (SocketChannel) key.channel();
-                            ChannelPipeline channelPipeline = (ChannelPipeline) key.attachment();
-                            channelPipeline.handleDownStream(socketChannel);
+                            channelPipeline.sendDownStream();
                             key.interestOps(SelectionKey.OP_READ);
                         }
                         keyIterator.remove();
