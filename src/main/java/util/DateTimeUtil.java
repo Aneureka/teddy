@@ -16,7 +16,7 @@ import java.util.TimeZone;
  **/
 public class DateTimeUtil {
 
-    public static String dateTimeToString(LocalDateTime localDateTime) {
+    public static String dateTimeToGMTString(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             throw new NullPointerException("localDateTime is null");
         }

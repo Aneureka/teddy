@@ -19,7 +19,7 @@ public class HttpHeaders {
     private Map<String, String> headers = new HashMap<>();
 
     public HttpHeaders() {
-        headers.put(Names.DATE, DateTimeUtil.dateTimeToString(LocalDateTime.now()));
+        headers.put(Names.DATE, DateTimeUtil.dateTimeToGMTString(LocalDateTime.now()));
     }
 
     public HttpHeaders(Map<String, String> headers) {
