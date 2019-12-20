@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
@@ -16,11 +17,14 @@ import java.util.TimeZone;
  **/
 public class DateTimeUtil {
 
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withLocale(Locale.US);
+
     public static String dateTimeToGMTString(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             throw new NullPointerException("localDateTime is null");
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
-        return localDateTime.atOffset(ZoneOffset.UTC).format(formatter);
+        ZonedDateTime utcTime = localDateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC"));
+        return utcTime.format(formatter);
     }
+
 }
