@@ -9,7 +9,7 @@ import java.nio.channels.SocketChannel;
  * @createdAt 2019-12-19 16:34
  * @description
  **/
-public class InitialChannelHandler implements ChannelHandler {
+public class SocketChannelHandler implements ChannelHandler {
 
     private final static int DEFAULT_BUFFER_SIZE = 1024 * 8;
 
@@ -17,11 +17,11 @@ public class InitialChannelHandler implements ChannelHandler {
 
     private SocketChannel channel;
 
-    public InitialChannelHandler(SocketChannel channel) {
+    public SocketChannelHandler(SocketChannel channel) {
         this(channel, DEFAULT_BUFFER_SIZE);
     }
 
-    public InitialChannelHandler(SocketChannel channel, int bufferSize) {
+    public SocketChannelHandler(SocketChannel channel, int bufferSize) {
         this.channel = channel;
         this.bufferSize = bufferSize;
     }

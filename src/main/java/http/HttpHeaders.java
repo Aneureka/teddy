@@ -1,3 +1,8 @@
+package http;
+
+import util.DateTimeUtil;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,7 +14,17 @@ import java.util.Map;
  **/
 public class HttpHeaders {
 
+    public static final HttpHeaders defaultHeaders = new HttpHeaders();
+
     private Map<String, String> headers = new HashMap<>();
+
+    public HttpHeaders() {
+        headers.put(Names.DATE, DateTimeUtil.dateTimeToString(LocalDateTime.now()));
+    }
+
+    public HttpHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
 
     public static String getHeader(HttpRequest request, String name) {
         return request.headers().get(name);
@@ -122,8 +137,8 @@ public class HttpHeaders {
         public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
         public static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
         public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
-        public static final String ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
-        public static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
+        public static final String ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-http.Request-Headers";
+        public static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-http.Request-Method";
         public static final String AGE = "Age";
         public static final String ALLOW = "Allow";
         public static final String AUTHORIZATION = "Authorization";
@@ -224,6 +239,4 @@ public class HttpHeaders {
         public static final String UPGRADE = "Upgrade";
         public static final String WEBSOCKET = "WebSocket";
     }
-
-
 }
