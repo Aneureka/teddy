@@ -12,9 +12,13 @@ A server instance is equiped with an `Acceptor` and a `Worker` : `Acceptor` acce
 
 Each `SocketChannel` is attached with a `ChannelHandlerPipeline` , which handles upstreams from `SocketChannel` and downstreams from application at the top layer. The server is flexible because adding more `ChannelHandler` to the pipeline is allowed, so you can handle both upstream and downstream at a higher layer.
 
+
+
 ### Progress
 
 🙆‍♀️ TCP layer
 
-👩‍💻 HTTP layer
+🙆‍♀️ HTTP layer: A standard & usable HTTP layer is already implemented, including HTTP message model, decoder, encoder...
+
+👩‍💻 XXX layer: You may add another layer by implementing `ChannelHandler` and add it to `ChannelPipeline`.
 
