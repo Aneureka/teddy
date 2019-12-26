@@ -1,6 +1,7 @@
 package http;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,10 @@ public class HttpContent {
 
     public HttpContent(List<Byte> content) {
         this.content = content;
+    }
+
+    public void setContent(String text) {
+        this.setContent(text, StandardCharsets.UTF_8);
     }
 
     public void setContent(String text, Charset charset) {

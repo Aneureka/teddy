@@ -35,4 +35,15 @@ public class HttpRequest extends HttpMessage {
     public void setUri(String uri) {
         this.uri = uri;
     }
+
+    @Override
+    public String toString() {
+        return "HttpRequest{" +
+                "method=" + method +
+                ", uri='" + uri + '\'' +
+                ", version=" + version +
+                ", content=" + content +
+                ", headers=" + headers +
+                '}';
+    }
 }

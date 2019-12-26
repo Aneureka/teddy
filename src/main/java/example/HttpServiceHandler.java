@@ -1,10 +1,12 @@
+package example;
+
 import core.ChannelHandler;
 import core.ChannelHandlerContext;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.HttpStatus;
 
-import java.util.regex.Matcher;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @author Aneureka
@@ -13,17 +15,34 @@ import java.util.regex.Matcher;
  **/
 public class HttpServiceHandler implements ChannelHandler {
 
+    Queue<HttpResponse> responseQueue;
+
+    public HttpServiceHandler() {
+        responseQueue = new LinkedList<>();
+    }
+
     @Override
     public void handleUpStream(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) msg;
             HttpResponse response = new HttpResponse();
-            response.setStatus(HttpStatus.OK);
             service(ctx, request, response);
+            responseQueue.add(response);
+        }
+    }
+
+    @Override
+    public void handleDownStream(ChannelHandlerContext ctx, Object msg) {
+        if (msg == null) {
+            while (!responseQueue.isEmpty()) {
+                ctx.sendDownStream(responseQueue.poll());
+            }
+        } else {
+            ctx.sendDownStream(msg);
         }
     }
 
     private void service(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
-        // do nothing
+        response.setContent("Hello, teddy!");
     }
 }

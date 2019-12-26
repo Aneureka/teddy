@@ -7,11 +7,11 @@ package http;
  **/
 public class HttpMessage {
 
-    private HttpVersion version;
+    protected HttpVersion version;
 
-    private HttpContent content;
+    protected HttpContent content;
 
-    private HttpHeaders headers;
+    protected HttpHeaders headers;
 
     public HttpMessage() {
     }

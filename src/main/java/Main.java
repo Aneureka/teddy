@@ -1,11 +1,7 @@
-import core.ByteToMessageCodec;
 import core.ChannelPipeline;
-import core.ChannelPipelineFactory;
 import core.TcpServer;
+import example.HttpServiceHandler;
 import http.HttpMessageCodec;
-import http.HttpRequest;
-
-import java.util.List;
 
 /**
  * @author Aneureka
@@ -15,7 +11,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        TcpServer server = new TcpServer((ChannelPipelineFactory) () -> {
+        TcpServer server = new TcpServer(() -> {
             ChannelPipeline pipeline = new ChannelPipeline();
             pipeline.add(new HttpMessageCodec());
             pipeline.add(new HttpServiceHandler());

@@ -20,17 +20,18 @@ public class HttpHeaders {
 
     public HttpHeaders() {
         headers.put(Names.DATE, DateTimeUtil.dateTimeToGMTString(LocalDateTime.now()));
+        headers.put(Names.CONTENT_LENGTH, String.valueOf(0));
     }
 
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
 
-    public static String getHeader(HttpRequest request, String name) {
-        return request.headers().get(name);
+    public static String getHeader(HttpMessage message, String name) {
+        return message.headers().get(name);
     }
 
-    public static void setHeader(HttpRequest request, String name, String value) {
+    public static void setHeader(HttpMessage message, String name, String value) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name is not exist");
         }
@@ -38,31 +39,31 @@ public class HttpHeaders {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("value is not exist");
         }
-        request.headers().set(name.trim(), value.trim());
+        message.headers().set(name.trim(), value.trim());
     }
 
-    public static void addHeader(HttpRequest request, String name, String value) {
-        HttpHeaders.setHeader(request, name, value);
+    public static void addHeader(HttpMessage message, String name, String value) {
+        HttpHeaders.setHeader(message, name, value);
     }
 
-    public static void removeHeader(HttpRequest request, String name) {
-        request.headers().remove(name);
+    public static void removeHeader(HttpMessage message, String name) {
+        message.headers().remove(name);
     }
 
-    public static void clearHeaders(HttpRequest request) {
-        request.headers().clear();
+    public static void clearHeaders(HttpMessage message) {
+        message.headers().clear();
     }
 
-    public static boolean hasContentLength(HttpRequest request) {
-        return request.headers().containsContentLength();
+    public static boolean hasContentLength(HttpMessage message) {
+        return message.headers().containsContentLength();
     }
 
-    public static boolean isChunkTransfer(HttpRequest request) {
-        return request.headers().isChunkTransfer();
+    public static boolean isChunkTransfer(HttpMessage message) {
+        return message.headers().isChunkTransfer();
     }
 
-    public static int getContentLength(HttpRequest request) {
-        String length = request.headers().get(HttpHeaders.Names.CONTENT_LENGTH);
+    public static int getContentLength(HttpMessage message) {
+        String length = message.headers().get(HttpHeaders.Names.CONTENT_LENGTH);
         if (length == null) {
             throw new IllegalArgumentException(HttpHeaders.Names.CONTENT_LENGTH + " is not exist");
         }

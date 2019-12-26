@@ -30,4 +30,24 @@ public class HttpResponse extends HttpMessage {
         this.status = status;
     }
 
+
+    public void setContent(HttpContent content) {
+        this.content = content;
+        HttpHeaders.setHeader(this, HttpHeaders.Names.CONTENT_LENGTH, String.valueOf(this.content.length()));
+    }
+
+    public void setContent(String text) {
+        this.content.setContent(text);
+        HttpHeaders.setHeader(this, HttpHeaders.Names.CONTENT_LENGTH, String.valueOf(this.content.length()));
+    }
+
+    @Override
+    public String toString() {
+        return "HttpResponse{" +
+                "status=" + status +
+                ", version=" + version +
+                ", content=" + content +
+                ", headers=" + headers +
+                '}';
+    }
 }

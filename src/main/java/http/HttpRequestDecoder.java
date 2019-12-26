@@ -109,7 +109,6 @@ public class HttpRequestDecoder {
                 }
             }
         }
-        System.out.println(curRequest);
         removeUsedContent(start, in);
         return true;
     }
@@ -140,11 +139,6 @@ public class HttpRequestDecoder {
             return -1;
         }
         // set method
-        System.out.println(initialItems[0]);
-        System.out.println(initialItems[1]);
-        System.out.println(initialItems[2]);
-
-        System.out.println(HttpMethod.valueOf(initialItems[0]));
         this.curRequest.setMethod(HttpMethod.valueOf(initialItems[0]));
         // set uri
         this.curRequest.setUri(initialItems[1]);
