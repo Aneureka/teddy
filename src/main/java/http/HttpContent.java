@@ -1,6 +1,7 @@
 package http;
 
-import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,17 +14,38 @@ public class HttpContent {
     private List<Byte> content;
 
     public HttpContent() {
+        this.content = new ArrayList<>();
     }
 
     public HttpContent(List<Byte> content) {
         this.content = content;
     }
 
-    public List<Byte> getContent() {
+    public void setContent(String text, Charset charset) {
+        byte[] bytes = text.getBytes(charset);
+        if (content == null) {
+            content = new ArrayList<>();
+        } else {
+            content.clear();
+        }
+        for (byte b : bytes) {
+            content.add(b);
+        }
+    }
+
+    public List<Byte> content() {
         return content;
     }
 
-    public void setContent(List<Byte> content) {
-        this.content = content;
+    public int length() {
+        if (content == null) {
+            return 0;
+        }
+        return content.size();
     }
+
+    public boolean isEmpty() {
+        return length() == 0;
+    }
+
 }

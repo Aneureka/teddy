@@ -8,14 +8,17 @@ package core;
 public interface ChannelHandler {
     /**
      * handle the message from former handler in the upstream and process.
+     *
      * @param ctx
      * @param msg
      */
     default void handleUpStream(ChannelHandlerContext ctx, Object msg) {
         ctx.sendUpstream(msg);
     }
+
     /**
      * handle the message from latter handler in the downstream and process.
+     *
      * @param ctx
      * @param msg
      */

@@ -8,6 +8,7 @@ package core;
 public interface ChannelPipelineFactory {
     /**
      * Create a channel pipeline instance.
+     *
      * @return
      */
     ChannelPipeline getPipeline();

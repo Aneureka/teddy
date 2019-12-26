@@ -111,10 +111,7 @@ public class HttpHeaders {
         if (value == null || value.isEmpty()) {
             return false;
         }
-        if (value.equalsIgnoreCase("chunked")) {
-            return true;
-        }
-        return false;
+        return value.equalsIgnoreCase("chunked");
     }
 
     public Iterator<Map.Entry<String, String>> headersIterator() {

@@ -5,11 +5,13 @@ import java.util.Map;
 
 /**
  * @author Aneureka
- * @createdAt  2019-12-07 17:13
+ * @createdAt 2019-12-07 17:13
  * @description Http request methods
  * @reference https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
  **/
 public class HttpMethod {
+
+    private static final Map<String, HttpMethod> methodMap = new HashMap<>();
 
     /**
      * The GET method requests a representation of the specified resource.
@@ -49,10 +51,7 @@ public class HttpMethod {
      */
     public static final HttpMethod PATCH = new HttpMethod("PATCH");
 
-    private static final Map<String, HttpMethod> methodMap;
-
     static {
-        methodMap = new HashMap<>();
         methodMap.put("OPTIONS", OPTIONS);
         methodMap.put("GET", GET);
         methodMap.put("HEAD", HEAD);
@@ -71,8 +70,11 @@ public class HttpMethod {
             throw new IllegalArgumentException("empty name");
         }
 
-        if (!methodMap.containsKey(name)) {
-            throw new IllegalArgumentException("method not in standard set");
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (Character.isISOControl(c) || Character.isWhitespace(c)) {
+                throw new IllegalArgumentException("invalid character in name");
+            }
         }
 
         this.name = name;
@@ -84,7 +86,8 @@ public class HttpMethod {
     }
 
     public static HttpMethod valueOf(String name) {
-        return methodMap.get(name);
+        HttpMethod result = methodMap.get(name);
+        return result != null ? result : new HttpMethod(name);
     }
 
     public String name() {

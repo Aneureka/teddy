@@ -11,13 +11,34 @@ import java.util.List;
  **/
 public class HttpMessageCodec extends ByteToMessageCodec<HttpRequest> {
 
+    private HttpRequestDecoder decoder;
+
+    private HttpResponseEncoder encoder;
+
+    public HttpMessageCodec() {
+        this(new HttpRequestDecoder(), new HttpResponseEncoder());
+    }
+
+    public HttpMessageCodec(HttpRequestDecoder decoder, HttpResponseEncoder encoder) {
+        this.decoder = decoder;
+        this.encoder = encoder;
+    }
+
     @Override
     protected boolean decode(List<Byte> in, List<HttpRequest> out) {
-        return false;
+        int size = out.size();
+        boolean res = decoder.decode(in, out);
+        return res && size < out.size();
     }
 
     @Override
     protected boolean encode(Object in, List<Byte> out) {
-        return false;
+        if (in instanceof HttpResponse || in instanceof HttpContent) {
+            int size = out.size();
+            encoder.encode(in, out);
+            return size < out.size();
+        } else {
+            return false;
+        }
     }
 }

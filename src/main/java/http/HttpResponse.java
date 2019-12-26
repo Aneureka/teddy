@@ -21,4 +21,13 @@ public class HttpResponse extends HttpMessage {
         super(version, content, headers);
         this.status = status;
     }
+
+    public HttpStatus status() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+
 }

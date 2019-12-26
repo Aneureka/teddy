@@ -35,7 +35,7 @@ public class ChannelPipeline {
         return channel != null;
     }
 
-    private void add(ChannelHandler handler) {
+    public void add(ChannelHandler handler) {
         ChannelHandlerContext nextCtx = new ChannelHandlerContext(handler);
         if (head == null) {
             head = nextCtx;
